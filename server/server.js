@@ -22,16 +22,23 @@ app.get('/',async (req,res)=>{
 app.post('/',async (req,res)=>{
     try{
         const prompt=req.body.prompt;
-        const response = await openai.createCompletion({
-            model: "text-davinci-003",
-            prompt: `${prompt}`,
-            temperature: 0.7,
-            max_tokens: 2000,
-            top_p: 1,
-            frequency_penalty: 0.5,
-            presence_penalty: 0,
-          });
-    res.status(200).send({ bot : response.data.choices[0].text})
+        const response = await await openai.chat.completions.create({
+                messages: [{"role": "system", "content": "You are a helpful assistant."},
+                    {"role": "user", "content": "Who won the world series in 2020?"},
+                    {"role": "assistant", "content": "The Los Angeles Dodgers won the World Series in 2020."},
+                    {"role": "user", "content": "Where was it played?"}],
+                model: "gpt-3.5-turbo",
+              });
+        // const response = await openai.createCompletion({
+        //     model: "text-davinci-003",
+        //     prompt: `${prompt}`,
+        //     temperature: 0.7,
+        //     max_tokens: 2000,
+        //     top_p: 1,
+        //     frequency_penalty: 0.5,
+        //     presence_penalty: 0,
+        //   });
+    res.status(200).send({ bot : response.choices[0].message.content})
 
     }catch(err){
         console.log(err)
